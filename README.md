@@ -1,4 +1,4 @@
-# Cotización de servicios — SIN VALOR FISCAL
+# Generador de PDF - Cotización de servicios / Presupuestos
 
 Generador HTML estático para crear cotizaciones / presupuestos **SIN VALOR FISCAL**, listo para imprimir o exportar a PDF desde el navegador.
 
@@ -30,7 +30,7 @@ El código fuente se encuentra en GitHub:
 ## Cómo usarlo
 
 1. Abrí la web:
-https://presupuestos.ezefernandez.com.ar
+ presupuestos.ezefernandez.com.ar
 
 2. Completá los datos en el panel superior:
 - Emisor
