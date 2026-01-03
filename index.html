@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Documento - Editor</title>
+
+  <style>
+    :root{
+      --blue:#1f7fbf;
+      --blue2:#e9f4fb;
+      --line:#8fbfda;
+      --text:#111;
+      --bg:#f4f4f4;
+      --danger:#b00020;
+    }
+
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1180px;margin:24px auto;padding:0 16px}
+    .panel{background:#fff;border:1px solid #ddd;padding:16px;border-radius:10px;margin-bottom:16px}
+    label{font-size:12px;color:#111;display:block;margin-bottom:4px;font-weight:800}
+    input,textarea,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box}
+    textarea{min-height:88px;resize:vertical}
+    .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    .help{font-size:11px;color:#555;margin-top:4px;line-height:1.25}
+    .sectionTitle{font-size:12px;font-weight:900;color:#111;margin:0 0 8px 0;text-transform:uppercase;letter-spacing:.4px}
+    .sep{height:14px}
+    .sep2{height:10px}
+    .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    button{padding:10px 14px;border:0;border-radius:6px;cursor:pointer;font-weight:900}
+    .btn{background:#111;color:#fff}
+    .btn2{background:#eaeaea}
+    .btnDanger{background:var(--danger);color:#fff}
+    .hint{font-size:12px;color:#444;margin-top:10px}
+
+    .itemsHdr{
+      display:grid;grid-template-columns:140px 1fr 110px 150px 90px 150px 42px;
+      gap:10px;margin-top:10px;color:#222;font-size:12px;font-weight:900
+    }
+    .itemRow{
+      display:grid;grid-template-columns:140px 1fr 110px 150px 90px 150px 42px;
+      gap:10px;align-items:center;margin-top:8px
+    }
+    .itemRow input{padding:9px}
+    .itemRow .line{background:#f7f7f7}
+    .pill{display:inline-block;border:1px solid #999;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;background:#fafafa}
+
+    .cuit3{display:grid;grid-template-columns:80px 1fr 80px;gap:8px}
+    .cuit3 input{text-align:center;font-weight:800}
+
+    .dmy3{display:grid;grid-template-columns:64px 18px 64px 18px 92px;gap:6px;align-items:center}
+    .dmy3 input{text-align:center;font-weight:800}
+    .dmy3 .slash{font-weight:900;color:#444;text-align:center}
+
+    .paper{
+      background:#fff;
+      width:210mm;
+      min-height:297mm;
+      margin:0 auto;
+      padding:12mm;
+      box-shadow:0 6px 20px rgba(0,0,0,.15);
+      box-sizing:border-box;
+      position:relative;
+      overflow:visible;
+    }
+
+    .watermark{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:none; z-index:0;
+    }
+    .watermark span{
+      transform: translateY(10px) rotate(-45deg);
+      font-size:44px;
+      font-weight:900;
+      letter-spacing:4px;
+      color:rgba(0,0,0,.08);
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .topWrap{position:relative;z-index:1}
+    .hrow{display:flex;gap:10px; position:relative;}
+    .hcol{flex:1}
+    .box{
+      border:2px solid var(--line);
+      border-radius:8px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .boxBody{padding:10px}
+
+    .mini{font-size:11px;line-height:1.25}
+    .bold{font-weight:900}
+    .muted{color:#444}
+    .right{text-align:right}
+    .center{text-align:center}
+
+    .midBadge{
+      position:absolute;
+      left:50%;
+      top:-14px;
+      transform:translateX(-50%);
+      z-index:10;
+      pointer-events:none;
+    }
+    .badge{
+      width:56px;height:56px;
+      border:2px solid var(--line);
+      border-radius:8px;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      font-weight:900;
+      background:#fff;
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
+    }
+    .badge .x{font-size:24px;line-height:1}
+    .badge .cod{font-size:11px;line-height:1;margin-top:2px}
+
+    .docTitle{
+      font-size:18px;
+      font-weight:900;
+      margin:0 0 6px 0;
+    }
+    .docPad{ padding-left:26px; }
+
+    .metaLine{display:flex;gap:14px;flex-wrap:wrap}
+    .metaLine .item{white-space:nowrap}
+
+    .fiscalStrip{
+      margin-top:10px;
+      border:2px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      overflow:hidden;
+    }
+    .fiscalStrip .inner{
+      padding:8px 10px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.6px;
+      text-align:center;
+      background:var(--blue2);
+    }
+
+    .clientStrip{
+      margin-top:10px;
+      border:2px solid var(--line);
+      border-radius:8px;
+      overflow:hidden;
+    }
+
+    table{border-collapse:collapse;width:100%}
+
+    .itemsTable{
+      margin-top:10px;
+      border:2px solid var(--line);
+      border-radius:8px;
+      overflow:hidden;
+      background:transparent;
+    }
+    .itemsTable thead th{
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      padding:10px 8px;
+      border-right:1px solid rgba(255,255,255,.25);
+    }
+    .itemsTable thead th:last-child{border-right:0}
+    .itemsTable tbody td{
+      padding:8px 8px;
+      font-size:12px;
+      border-top:1px solid #d7ebf7;
+      background:transparent !important;
+    }
+    .itemsTable tbody tr:nth-child(even) td{background:transparent !important;}
+
+    .rightCell{text-align:right}
+    .centerCell{text-align:center}
+
+    .bottomRow{display:flex;gap:10px;margin-top:10px}
+    .noteBox{flex:1}
+    .totalsBox{width:340px}
+    .totRow{display:flex;justify-content:space-between;font-size:12px;margin:4px 0}
+    .totRow .lbl{font-weight:900;color:#333}
+    .totRow .val{font-weight:900}
+    .totalBar{
+      margin-top:10px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:6px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+    .totalText{
+      margin-top:8px;
+      font-size:11px;
+      line-height:1.3;
+      color:#111;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.3px;
+    }
+
+    .clientInner{padding:8px 10px;background:#fff}
+    .clientLine{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+    .clientLine .left{display:flex;gap:10px;flex-wrap:wrap}
+    .clientExtra{margin-top:6px}
+    .clientExtra .rowLine{display:flex;gap:18px;flex-wrap:wrap}
+    .clientExtra .rowLine > div{white-space:nowrap}
+
+    @page { size:A4; margin:0; }
+    @media print{
+      body{background:#fff}
+      .panel,.hint{display:none !important;}
+      .wrap{max-width:none;margin:0;padding:0 !important;}
+      .paper{
+        width:auto !important;
+        min-height:auto !important;
+        margin:0 !important;
+        padding:12mm !important;
+        box-shadow:none !important;
+        overflow:visible !important;
+      }
+      *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="panel">
+      <div class="sectionTitle">Documento</div>
+      <div class="grid">
+        <div>
+          <label>Tipo de documento</label>
+          <select id="tipo">
+            <option value="PRESUPUESTO" selected>Presupuesto</option>
+            <option value="RECIBO_NO_FISCAL">Recibo (No Fiscal)</option>
+          </select>
+          <div class="help">Documento sin valor fiscal.</div>
+        </div>
+        <div>
+          <label>Fecha</label>
+          <input id="fecha" value="" placeholder="dd/mm/aaaa">
+          <div class="help">Se completa por defecto con fecha del sistema. Podés editarla.</div>
+        </div>
+        <div>
+          <label>Validez (días) (opcional)</label>
+          <input id="validez" value="30" inputmode="numeric" autocomplete="off" placeholder="30">
+          <div class="help">Por defecto 30. Si lo vaciás, no se muestra.</div>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="sectionTitle">Título del documento</div>
+      <div class="grid">
+        <div style="grid-column:1 / span 2">
+          <label>Título (editable)</label>
+          <input id="doc_title" value="Cotización de servicios" />
+          <div class="help">Por defecto “Cotización de servicios”. Cambialo si querés otro tipo de documento.</div>
+        </div>
+        <div class="row"></div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="sectionTitle">Datos del emisor</div>
+      <div class="grid">
+        <div>
+          <label>Emisor (nombre / razón social)</label>
+          <input id="emisor" value="">
+        </div>
+        <div>
+          <label>Rubro / Servicio</label>
+          <input id="rubro" value="">
+        </div>
+        <div>
+          <label>Localidad emisor</label>
+          <input id="loc_emisor" value="">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label>Domicilio emisor</label>
+          <input id="dom_emisor" value="">
+        </div>
+        <div>
+          <label>Email emisor (opcional)</label>
+          <input id="email_emisor" value="">
+        </div>
+        <div>
+          <label>Web emisor (opcional)</label>
+          <input id="web_emisor" value="">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label>CUIT emisor (opcional)</label>
+          <div class="cuit3">
+            <input id="cuit_em_a" placeholder="XX" maxlength="2" inputmode="numeric" autocomplete="off">
+            <input id="cuit_em_b" placeholder="XXXXXXXX" maxlength="8" inputmode="numeric" autocomplete="off">
+            <input id="cuit_em_c" placeholder="XX" maxlength="2" inputmode="numeric" autocomplete="off">
+          </div>
+          <div class="help">Formato: 2 - 8 - 2 (solo números).</div>
+        </div>
+        <div>
+          <label>Ing. Brutos (opcional)</label>
+          <input id="iibb" value="">
+        </div>
+        <div>
+          <label>Inicio Act. (opcional) (DD/MM/YYYY)</label>
+          <div class="dmy3">
+            <input id="inicio_dd" placeholder="DD" maxlength="2" inputmode="numeric" autocomplete="off">
+            <div class="slash">/</div>
+            <input id="inicio_mm" placeholder="MM" maxlength="2" inputmode="numeric" autocomplete="off">
+            <div class="slash">/</div>
+            <input id="inicio_yyyy" placeholder="YYYY" maxlength="4" inputmode="numeric" autocomplete="off">
+          </div>
+          <div class="help">Solo números.</div>
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label>Categoría (opcional)</label>
+          <input id="categoria" value="">
+        </div>
+        <div class="row"></div>
+        <div class="row"></div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="sectionTitle">Datos del destinatario</div>
+      <div class="grid">
+        <div>
+          <label>Sr./Sres. (Destinatario)</label>
+          <input id="destinatario" value="">
+        </div>
+        <div>
+          <label>Localidad destinatario (opcional)</label>
+          <input id="loc_dest" value="">
+        </div>
+        <div>
+          <label>Domicilio destinatario (opcional)</label>
+          <input id="dom_dest" value="">
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <label>CUIT destinatario (opcional)</label>
+          <div class="cuit3">
+            <input id="cuit_de_a" placeholder="XX" maxlength="2" inputmode="numeric" autocomplete="off">
+            <input id="cuit_de_b" placeholder="XXXXXXXX" maxlength="8" inputmode="numeric" autocomplete="off">
+            <input id="cuit_de_c" placeholder="XX" maxlength="2" inputmode="numeric" autocomplete="off">
+          </div>
+          <div class="help">Formato: 2 - 8 - 2 (solo números).</div>
+        </div>
+        <div class="row"></div>
+        <div class="row"></div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="sectionTitle">Ítems</div>
+      <div class="help" style="margin-top:-2px;font-weight:800;color:#111">
+        Cada línea calcula <span class="pill">Cant. × Precio Unit. = Subtotal</span>.
+      </div>
+
+      <div class="itemsHdr">
+        <div>Código</div><div>Descripción</div><div>Cant.</div><div>Precio unit.</div><div>Dto (%)</div><div>Subtotal</div><div></div>
+      </div>
+      <div id="items"></div>
+
+      <div class="sep2"></div>
+
+      <div class="sectionTitle">Override de total (opcional)</div>
+      <div class="grid">
+        <div>
+          <label>Total fijo (ARS) (opcional)</label>
+          <input id="total_override" value="" inputmode="numeric" autocomplete="off" placeholder="Ej: 150000">
+          <div class="help">Si completás esto, el subtotal se calcula desde este monto (antes de descuento/IVA). Ítems quedan como detalle visual, pero no suman.</div>
+        </div>
+        <div class="row"></div>
+        <div class="row"></div>
+      </div>
+
+      <div class="sep2"></div>
+
+      <div class="sectionTitle">Ajustes</div>
+      <div class="grid2">
+        <div>
+          <label>Descuento global (%) (opcional)</label>
+          <input id="descuento_pct" value="" inputmode="numeric" autocomplete="off" placeholder="0">
+          <div class="help">Se aplica al subtotal (antes del IVA). Ej: 10 = 10%.</div>
+        </div>
+        <div>
+          <label>IVA (%) (opcional)</label>
+          <input id="iva" value="" inputmode="numeric" autocomplete="off" placeholder="0">
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="sectionTitle">Observaciones / Condiciones (opcional)</div>
+      <div class="row">
+        <div>
+          <label>Notas (opcional)</label>
+          <textarea id="obs" placeholder="Escribí acá las observaciones..."></textarea>
+          <div class="help">Si lo dejás vacío, el bloque queda con el título solamente.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn2" id="btnAdd" type="button">Agregar ítem</button>
+        <button class="btn" id="btnPrint" type="button">Imprimir a PDF</button>
+        <button class="btn2" id="btnReset" type="button">Reset</button>
+      </div>
+
+      <div class="hint">
+        Nota: encabezado/pie en PDF depende de “Encabezados y pies de página” del diálogo de impresión.
+      </div>
+    </div>
+
+    <div class="paper">
+      <div class="watermark"><span>SIN VALOR FISCAL</span></div>
+
+      <div class="topWrap">
+
+        <div class="hrow">
+          <div class="midBadge">
+            <div class="badge">
+              <div class="x">X</div>
+              <div class="cod">COD. X</div>
+            </div>
+          </div>
+
+          <div class="hcol box">
+            <div class="boxBody">
+              <div class="mini muted" style="margin-bottom:6px">
+                <span class="bold" id="o_emisor"></span>
+              </div>
+
+              <div class="mini">
+                <div class="bold" id="o_rubro"></div>
+
+                <div style="margin-top:6px">
+                  <span id="o_dom_emisor_row" style="display:none">
+                    <span class="bold">Domicilio:</span> <span id="o_dom_emisor"></span><br>
+                  </span>
+                  <span id="o_loc_emisor_row" style="display:none">
+                    <span class="bold">Localidad:</span> <span id="o_loc_emisor"></span><br>
+                  </span>
+
+                  <span id="o_cuit_emisor_row" style="display:none">
+                    <span class="bold">CUIT:</span> <span id="o_cuit_emisor"></span><br>
+                  </span>
+
+                  <span id="o_email_emisor_row" style="display:none">
+                    <span class="bold">Email:</span> <span id="o_email_emisor"></span><br>
+                  </span>
+
+                  <span id="o_web_emisor_row" style="display:none">
+                    <span class="bold">Web:</span> <span id="o_web_emisor"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hcol box">
+            <div class="boxBody docPad">
+              <div>
+                <div class="docTitle" id="o_doc_title">Cotización de servicios</div>
+
+                <div class="mini" style="margin-top:2px">
+                  <div class="metaLine">
+                    <div class="item"><span class="bold">Tipo:</span> <span id="o_title">PRESUPUESTO</span></div>
+                  </div>
+
+                  <div class="metaLine" style="margin-top:2px">
+                    <div class="item"><span class="bold">Nro:</span> <span id="o_numero"></span></div>
+                    <div class="item"><span class="bold">Fecha:</span> <span id="o_fecha"></span></div>
+                  </div>
+
+                  <div style="height:8px"></div>
+
+                  <div class="mini">
+                    <span id="o_iibb_row" style="display:none">
+                      <span class="bold">Ing. Brutos:</span> <span id="o_iibb"></span><br>
+                    </span>
+                    <span id="o_inicio_row" style="display:none">
+                      <span class="bold">Inicio Act.:</span> <span id="o_inicio"></span><br>
+                    </span>
+                    <span id="o_categoria_row" style="display:none">
+                      <span class="bold">Categoría:</span> <span id="o_categoria"></span>
+                    </span>
+                  </div>
+
+                  <div style="height:6px"></div>
+
+                  <div class="metaLine">
+                    <div class="item" id="o_validez_row" style="display:none"><span class="bold">Validez:</span> <span id="o_validez"></span></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fiscalStrip">
+          <div class="inner">SIN VALOR FISCAL</div>
+        </div>
+
+        <div class="clientStrip">
+          <div class="clientInner mini">
+            <div class="clientLine">
+              <div class="left">
+                <div><span class="bold">Cliente:</span> <span id="o_destinatario"></span></div>
+              </div>
+
+              <div id="o_cuit_dest_row" style="margin-left:auto;display:none;padding-right:32px">
+                <span class="bold">CUIT:</span> <span id="o_cuit_dest"></span>
+              </div>
+            </div>
+
+            <div class="clientExtra" id="o_dest_extra" style="display:none">
+              <div class="rowLine">
+                <div id="o_dom_dest_row" style="display:none">
+                  <span class="bold">Domicilio:</span> <span id="o_dom_dest"></span>
+                </div>
+                <div id="o_loc_dest_row" style="display:none">
+                  <span class="bold">Localidad:</span> <span id="o_loc_dest"></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="itemsTable">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:16%">Cód.</th>
+                <th style="width:44%">Descripción</th>
+                <th style="width:10%" class="center">Cant.</th>
+                <th style="width:15%" class="right">Precio U.</th>
+                <th style="width:7%" class="center">Dto.</th>
+                <th style="width:16%" class="right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="o_lines"></tbody>
+          </table>
+        </div>
+
+        <div class="bottomRow">
+          <div class="box noteBox">
+            <div class="boxBody mini muted" style="min-height:76px">
+              <!-- queda siempre; si hay texto, reemplaza el contenido con el formato pedido SIN repetir -->
+              <div id="o_note_title" class="bold">Observaciones / Condiciones (opcional)</div>
+
+              <div id="o_note_block" style="display:none;margin-top:6px">
+                <div id="o_obs_text"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="box totalsBox">
+            <div class="boxBody">
+              <div class="totRow"><div class="lbl">Subtotal:</div><div class="val" id="o_subtotal">0,00</div></div>
+              <div class="totRow" id="o_desc_row" style="display:none"><div class="lbl" id="o_desc_lbl">Descuento (%):</div><div class="val" id="o_desc">0,00</div></div>
+              <div class="totRow" id="o_iva_row" style="display:none"><div class="lbl" id="o_iva_lbl">IVA:</div><div class="val" id="o_iva">0,00</div></div>
+              <div class="totalBar"><div>TOTAL</div><div id="o_total">0,00</div></div>
+
+              <div class="totalText" id="o_total_text">SON PESOS: CERO.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const MIN_LINES = 16;
+
+    function escapeHtml(s){
+      return (s ?? "").toString()
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+    function parseMoney(s){
+      s = (s ?? "").toString().trim();
+      if (!s) return 0;
+      s = s.replace(/\s+/g,"");
+      if (s.includes(",")) s = s.replace(/\./g,"").replace(",",".");
+      const n = Number(s);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function fmtIntDot(n){
+      n = Math.round(Number(n || 0));
+      return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    function moneyCell(n){ return fmtIntDot(n) + ",00"; }
+
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function todayDMY(){
+      const d = new Date();
+      return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
+    }
+
+    function genDocNumber(){
+      const b = Math.floor(1 + Math.random()*99999999);
+      return `0000-${String(b).padStart(8,'0')}`;
+    }
+
+    function attachNumericBlocker(el, { allowDecimal = true, maxLen = null } = {}) {
+      const clean = (v) => {
+        v = (v ?? "").toString().replace(/\s+/g, "");
+        if (allowDecimal) {
+          v = v.replace(/[^\d.,]/g, "");
+          const m = v.match(/[.,]/);
+          if (m) {
+            const idx = v.indexOf(m[0]);
+            v = v.slice(0, idx + 1) + v.slice(idx + 1).replace(/[.,]/g, "");
+          }
+        } else {
+          v = v.replace(/[^\d]/g, "");
+        }
+        if (maxLen && v.length > maxLen) v = v.slice(0, maxLen);
+        return v;
+      };
+
+      el.addEventListener("beforeinput", (e) => {
+        if (!e.data) return;
+        if (/\s/.test(e.data)) { e.preventDefault(); return; }
+        if (allowDecimal) {
+          if (!/[\d.,]/.test(e.data)) { e.preventDefault(); return; }
+          if (/[.,]/.test(e.data) && /[.,]/.test(el.value)) { e.preventDefault(); return; }
+        } else {
+          if (!/\d/.test(e.data)) { e.preventDefault(); return; }
+        }
+        if (maxLen && (el.value.length >= maxLen) && el.selectionStart === el.selectionEnd) {
+          e.preventDefault();
+        }
+      });
+
+      el.addEventListener("input", () => {
+        const c = clean(el.value);
+        if (c !== el.value) el.value = c;
+      });
+
+      el.value = clean(el.value);
+    }
+
+    function wireAllNumericInputs(){
+      attachNumericBlocker($("validez"), { allowDecimal:false });
+      attachNumericBlocker($("descuento_pct"), { allowDecimal:false });
+      attachNumericBlocker($("iva"), { allowDecimal:false });
+      attachNumericBlocker($("total_override"), { allowDecimal:false });
+
+      ["cuit_em_a","cuit_em_b","cuit_em_c","cuit_de_a","cuit_de_b","cuit_de_c"].forEach(id=>{
+        const el = $(id);
+        const ml = (id.endsWith("_a") || id.endsWith("_c")) ? 2 : 8;
+        attachNumericBlocker(el, { allowDecimal:false, maxLen: ml });
+      });
+
+      attachNumericBlocker($("inicio_dd"), { allowDecimal:false, maxLen: 2 });
+      attachNumericBlocker($("inicio_mm"), { allowDecimal:false, maxLen: 2 });
+      attachNumericBlocker($("inicio_yyyy"), { allowDecimal:false, maxLen: 4 });
+
+      document.querySelectorAll("#items .itemRow").forEach(r => {
+        attachNumericBlocker(r.querySelector(".qty"), { allowDecimal:false });
+        attachNumericBlocker(r.querySelector(".unit"), { allowDecimal:true });
+        attachNumericBlocker(r.querySelector(".dto"), { allowDecimal:false });
+      });
+    }
+
+    function autoAdvance(fromId, toId, len){
+      const a = $(fromId);
+      const b = $(toId);
+      a.addEventListener("input", () => {
+        if (a.value.length >= len) b.focus();
+      });
+    }
+
+    function addItem(code="", desc="", qty="1", unit="0", dto="0"){
+      const row = document.createElement("div");
+      row.className = "itemRow";
+      row.innerHTML = `
+        <input placeholder="Código" class="code" value="${escapeHtml(code)}">
+        <input placeholder="Descripción" class="desc" value="${escapeHtml(desc)}">
+        <input placeholder="Cant." class="qty" value="${escapeHtml(qty)}" inputmode="numeric" autocomplete="off">
+        <input placeholder="Precio unit. (ARS)" class="unit" value="${escapeHtml(unit)}" inputmode="decimal" autocomplete="off">
+        <input placeholder="Dto" class="dto" value="${escapeHtml(dto)}" inputmode="numeric" autocomplete="off">
+        <input placeholder="Subtotal" class="line" value="0,00" readonly>
+        <button class="btnDanger" title="Quitar" type="button">×</button>
+      `;
+      row.querySelector("button").addEventListener("click", () => { row.remove(); sync(); });
+      row.querySelectorAll("input").forEach(inp => { if (!inp.readOnly) inp.addEventListener("input", sync); });
+      $("items").appendChild(row);
+      wireAllNumericInputs();
+      sync();
+    }
+
+    function nz(v){
+      v = (v ?? "").toString();
+      v = v.replace(/\s+/g," ").trim();
+      return v;
+    }
+
+    function cuitFrom3(a,b,c){
+      a = (a||"").trim(); b = (b||"").trim(); c = (c||"").trim();
+      if (!a && !b && !c) return "";
+      const full = (a.length===2 && b.length===8 && c.length===2);
+      if (full) return `${a}-${b}-${c}`;
+      return [a,b,c].filter(x=>x).join("-");
+    }
+
+    function inicioFrom3(dd,mm,yyyy){
+      dd = (dd||"").trim(); mm=(mm||"").trim(); yyyy=(yyyy||"").trim();
+      if (!dd && !mm && !yyyy) return "";
+      const pdd = dd ? dd.padStart(2,"0") : "";
+      const pmm = mm ? mm.padStart(2,"0") : "";
+      const py  = yyyy ? yyyy.padStart(4,"0") : "";
+      return [pdd,pmm,py].filter(x=>x).join("/");
+    }
+
+    function showRow(rowId, show){
+      $(rowId).style.display = show ? "" : "none";
+    }
+
+    function numToWordsEs(n){
+      n = Math.floor(Math.max(0, Number(n||0)));
+      if (n === 0) return "CERO";
+      const u = ["","UNO","DOS","TRES","CUATRO","CINCO","SEIS","SIETE","OCHO","NUEVE"];
+      const e10 = ["DIEZ","ONCE","DOCE","TRECE","CATORCE","QUINCE","DIECISÉIS","DIECISIETE","DIECIOCHO","DIECINUEVE"];
+      const d = ["","DIEZ","VEINTE","TREINTA","CUARENTA","CINCUENTA","SESENTA","SETENTA","OCHENTA","NOVENTA"];
+      const c = ["","CIENTO","DOSCIENTOS","TRESCIENTOS","CUATROCIENTOS","QUINIENTOS","SEISCIENTOS","SETECIENTOS","OCHOCIENTOS","NOVECIENTOS"];
+
+      function tens(n){
+        if (n < 10) return u[n];
+        if (n >= 10 && n < 20) return e10[n-10];
+        const dec = Math.floor(n/10);
+        const uni = n%10;
+        if (dec === 2){
+          if (uni === 0) return "VEINTE";
+          return "VEINTI" + u[uni].toLowerCase().toUpperCase();
+        }
+        if (uni === 0) return d[dec];
+        return d[dec] + " Y " + u[uni];
+      }
+      function hundreds(n){
+        if (n === 100) return "CIEN";
+        const cen = Math.floor(n/100);
+        const rest = n%100;
+        return (cen ? c[cen] : "") + (rest ? (cen ? " " : "") + tens(rest) : "");
+      }
+      function chunk(n){
+        if (n < 1000) return hundreds(n);
+        return "";
+      }
+
+      const millions = Math.floor(n/1000000);
+      const thousands = Math.floor((n%1000000)/1000);
+      const rest = n%1000;
+
+      let out = "";
+      if (millions){
+        if (millions === 1) out += "UN MILLÓN";
+        else out += chunk(millions) + " MILLONES";
+      }
+      if (thousands){
+        if (out) out += " ";
+        if (thousands === 1) out += "MIL";
+        else out += chunk(thousands) + " MIL";
+      }
+      if (rest){
+        if (out) out += " ";
+        out += chunk(rest);
+      }
+      return out.trim();
+    }
+
+    function totalToText(total){
+      const entero = Math.floor(Math.max(0, Number(total||0)));
+      return `SON PESOS: ${numToWordsEs(entero)}.`;
+    }
+
+    function syncHeader(){
+      const tipoKey = $("tipo").value;
+      const tipoLabel = (tipoKey === "RECIBO_NO_FISCAL") ? "RECIBO (NO FISCAL)" : "PRESUPUESTO";
+      $("o_title").textContent = tipoLabel;
+
+      $("o_numero").textContent = $("o_numero").textContent || genDocNumber();
+
+      const dt = nz($("doc_title").value) || "Cotización de servicios";
+      $("o_doc_title").textContent = dt;
+
+      $("o_emisor").textContent = nz($("emisor").value);
+      $("o_rubro").textContent = nz($("rubro").value);
+
+      const domEm = nz($("dom_emisor").value);
+      $("o_dom_emisor").textContent = domEm;
+      showRow("o_dom_emisor_row", !!domEm);
+
+      const locEm = nz($("loc_emisor").value);
+      $("o_loc_emisor").textContent = locEm;
+      showRow("o_loc_emisor_row", !!locEm);
+
+      const cuitEm = cuitFrom3($("cuit_em_a").value,$("cuit_em_b").value,$("cuit_em_c").value);
+      $("o_cuit_emisor").textContent = cuitEm;
+      showRow("o_cuit_emisor_row", !!cuitEm);
+
+      const emailEm = nz($("email_emisor").value);
+      $("o_email_emisor").textContent = emailEm;
+      showRow("o_email_emisor_row", !!emailEm);
+
+      const webEm = nz($("web_emisor").value);
+      $("o_web_emisor").textContent = webEm;
+      showRow("o_web_emisor_row", !!webEm);
+
+      const iibb = nz($("iibb").value);
+      $("o_iibb").textContent = iibb;
+      showRow("o_iibb_row", !!iibb);
+
+      const inicio = inicioFrom3($("inicio_dd").value, $("inicio_mm").value, $("inicio_yyyy").value);
+      $("o_inicio").textContent = inicio;
+      showRow("o_inicio_row", !!inicio);
+
+      const cat = nz($("categoria").value);
+      $("o_categoria").textContent = cat;
+      showRow("o_categoria_row", !!cat);
+
+      $("o_destinatario").textContent = nz($("destinatario").value);
+
+      const cuitDe = cuitFrom3($("cuit_de_a").value,$("cuit_de_b").value,$("cuit_de_c").value);
+      $("o_cuit_dest").textContent = cuitDe;
+      showRow("o_cuit_dest_row", !!cuitDe);
+
+      const domDest = nz($("dom_dest").value);
+      const locDest = nz($("loc_dest").value);
+
+      $("o_dom_dest").textContent = domDest;
+      $("o_loc_dest").textContent = locDest;
+
+      showRow("o_dom_dest_row", !!domDest);
+      showRow("o_loc_dest_row", !!locDest);
+      $("o_dest_extra").style.display = (domDest || locDest) ? "" : "none";
+
+      $("o_fecha").textContent = nz($("fecha").value);
+
+      const v = $("validez").value.trim();
+      $("o_validez").textContent = v ? (v + " DÍAS") : "";
+      showRow("o_validez_row", !!v);
+
+      // Observaciones:
+      // - el título queda siempre (con fuente "bold" como el resto)
+      // - si hay texto, agrego SOLO el texto en el bloque (sin repetir Observaciones)
+      const obs = nz($("obs").value);
+      if (obs){
+        $("o_note_block").style.display = "";
+        $("o_obs_text").innerHTML = escapeHtml(obs).replace(/\n/g,"<br>");
+      } else {
+        $("o_note_block").style.display = "none";
+        $("o_obs_text").textContent = "";
+      }
+    }
+
+    function syncLinesAndTotals(){
+      const body = $("o_lines");
+      body.innerHTML = "";
+
+      const rows = Array.from(document.querySelectorAll("#items .itemRow"));
+      let rendered = 0;
+      let subtotalItems = 0;
+
+      rows.forEach(r => {
+        const code = r.querySelector(".code").value.trim();
+        const desc = r.querySelector(".desc").value.trim();
+        const qty = Math.max(0, Number(r.querySelector(".qty").value || 0));
+        const unit = parseMoney(r.querySelector(".unit").value);
+        const dtoPct = Math.min(100, Math.max(0, Number(r.querySelector(".dto").value || 0)));
+
+        const raw = qty * unit;
+        const lineTotal = Math.round(raw * (1 - (dtoPct/100)));
+
+        subtotalItems += lineTotal;
+        r.querySelector(".line").value = moneyCell(lineTotal);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(code)}</td>
+          <td>${escapeHtml(desc)}</td>
+          <td class="centerCell">${qty ? qty : ""}</td>
+          <td class="rightCell">${moneyCell(unit)}</td>
+          <td class="centerCell">${dtoPct ? (dtoPct + "%") : "0%"}</td>
+          <td class="rightCell">${moneyCell(lineTotal)}</td>
+        `;
+        body.appendChild(tr);
+        rendered++;
+      });
+
+      const blanks = Math.max(0, MIN_LINES - rendered);
+      for (let i=0;i<blanks;i++){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td>`;
+        body.appendChild(tr);
+      }
+
+      const overrideRaw = ($("total_override").value || "").trim();
+      const hasOverride = overrideRaw !== "";
+      const overrideVal = hasOverride ? Math.round(Math.max(0, Number(overrideRaw))) : 0;
+
+      const subtotalBase = hasOverride ? overrideVal : Math.round(subtotalItems);
+
+      const descPct = Math.max(0, Math.min(100, Number($("descuento_pct").value || 0)));
+      const ivaPct = Math.max(0, Number($("iva").value || 0));
+
+      const descAmt = Math.round(subtotalBase * (descPct/100));
+      const base = Math.max(0, subtotalBase - descAmt);
+      const ivaAmt = Math.round(base * (ivaPct/100));
+      const total = base + ivaAmt;
+
+      $("o_subtotal").textContent = moneyCell(subtotalBase);
+
+      if (descPct > 0){
+        $("o_desc_row").style.display = "";
+        $("o_desc_lbl").textContent = `Descuento (${descPct}%)`;
+        $("o_desc").textContent = moneyCell(descAmt);
+      } else {
+        $("o_desc_row").style.display = "none";
+      }
+
+      if (ivaPct > 0){
+        $("o_iva_row").style.display = "";
+        $("o_iva").textContent = moneyCell(ivaAmt);
+        $("o_iva_lbl").textContent = `IVA (${ivaPct}%)`;
+      } else {
+        $("o_iva_row").style.display = "none";
+      }
+
+      $("o_total").textContent = moneyCell(total);
+      $("o_total_text").textContent = totalToText(total);
+    }
+
+    function sync(){ syncHeader(); syncLinesAndTotals(); }
+
+    [
+      "tipo","fecha","validez","doc_title",
+      "destinatario","loc_dest","dom_dest",
+      "emisor","dom_emisor","rubro","loc_emisor",
+      "email_emisor","web_emisor",
+      "iibb","categoria",
+      "descuento_pct","iva",
+      "total_override",
+      "cuit_em_a","cuit_em_b","cuit_em_c","cuit_de_a","cuit_de_b","cuit_de_c",
+      "inicio_dd","inicio_mm","inicio_yyyy",
+      "obs"
+    ].forEach(id => $(id).addEventListener("input", sync));
+
+    $("btnAdd").addEventListener("click", () => addItem("", "", "1", "0", "0"));
+    $("btnPrint").addEventListener("click", () => window.print());
+    $("btnReset").addEventListener("click", () => location.reload());
+
+    $("fecha").value = todayDMY();
+    addItem("", "", "1", "0", "0");
+
+    function wireAllNumericInputs(){
+      attachNumericBlocker($("validez"), { allowDecimal:false });
+      attachNumericBlocker($("descuento_pct"), { allowDecimal:false });
+      attachNumericBlocker($("iva"), { allowDecimal:false });
+      attachNumericBlocker($("total_override"), { allowDecimal:false });
+
+      ["cuit_em_a","cuit_em_b","cuit_em_c","cuit_de_a","cuit_de_b","cuit_de_c"].forEach(id=>{
+        const el = $(id);
+        const ml = (id.endsWith("_a") || id.endsWith("_c")) ? 2 : 8;
+        attachNumericBlocker(el, { allowDecimal:false, maxLen: ml });
+      });
+
+      attachNumericBlocker($("inicio_dd"), { allowDecimal:false, maxLen: 2 });
+      attachNumericBlocker($("inicio_mm"), { allowDecimal:false, maxLen: 2 });
+      attachNumericBlocker($("inicio_yyyy"), { allowDecimal:false, maxLen: 4 });
+
+      document.querySelectorAll("#items .itemRow").forEach(r => {
+        attachNumericBlocker(r.querySelector(".qty"), { allowDecimal:false });
+        attachNumericBlocker(r.querySelector(".unit"), { allowDecimal:true });
+        attachNumericBlocker(r.querySelector(".dto"), { allowDecimal:false });
+      });
+    }
+
+    wireAllNumericInputs();
+    autoAdvance("inicio_dd","inicio_mm",2);
+    autoAdvance("inicio_mm","inicio_yyyy",2);
+
+    sync();
+  </script>
+</body>
+</html>
